@@ -15,18 +15,32 @@ namespace BibliotecaAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            // Configurações adicionais do modelo
-            modelBuilder.Entity<Livro>()
-                .HasOne(l => l.Genero)
-                .WithMany(g => g.Livros)
-                .HasForeignKey(l => l.GeneroId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Genero>(entity =>
+            {
+                entity.HasMany(g => g.Livros)
+                      .WithOne(l => l.Genero)
+                      .HasForeignKey(l => l.GeneroId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
 
-            modelBuilder.Entity<Livro>()
-                .HasOne(l => l.Autor)
-                .WithMany(a => a.Livros)
-                .HasForeignKey(l => l.AutorId)
-                .OnDelete(DeleteBehavior.Restrict);
+            modelBuilder.Entity<Autor>(entity =>
+            {
+                entity.HasMany(a => a.Livros)
+                      .WithOne(l => l.Autor)
+                      .HasForeignKey(l => l.AutorId)
+                      .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            modelBuilder.Entity<Livro>(entity =>
+            {
+                entity.HasOne(l => l.Genero)
+                      .WithMany(g => g.Livros)
+                      .HasForeignKey(l => l.GeneroId);
+
+                entity.HasOne(l => l.Autor)
+                      .WithMany(a => a.Livros)
+                      .HasForeignKey(l => l.AutorId);
+            });
         }
     }
 }
